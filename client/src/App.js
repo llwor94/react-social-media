@@ -1,10 +1,9 @@
 import React from "react";
-import { addPost } from "./actions/addPost";
-import { connect } from "react-redux";
-import { getPosts } from "./reducers";
-import Post from "./components/Post";
-import Header from './components/Header'
-import { fetchData } from './actions/firebaseData'
+import PostFeed from "./components/PostFeed";
+import Header from './components/Header';
+import AddPost from './components/AddPost';
+import PostContainer from './components/PostContainer';
+import { Route } from 'react-router-dom';
 import styled, { injectGlobal } from "styled-components";
 
 injectGlobal`
@@ -20,50 +19,19 @@ const Main = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-`
+`;
 
-
-
-const Posts = styled.div`
-  margin: 1rem auto;
-  display: inline-block;
-`
-
-class App extends React.Component {
-  componentDidMount() {
-    this.props.fetchData();
-  }
-  render () {
+function App() {
   return (
     <Main>
       <Header />
-      <Posts>
-      {this.props.posts.map(post => (
-        <Post key={post.id} post={post} />
-      ))}
-      </Posts>
-      <div>
-        <input
-          type="text"
-          placeholder="Add post"
-          onKeyDown={e => {
-            if (e.key === "Enter") {
-              this.props.addPost(e.target.value);
-              e.target.value = "";
-            }
-          }}
-        />
-      </div>
+      <Route exact path='/' component={ AddPost } />
+      <Route exact path='/' component={ PostFeed } />
+      <Route path='/posts/:id' component={ PostContainer } />   
     </Main>
   );
 }
-}
 
-const mapStateToProps = state => ({
-  posts: getPosts(state),
-});
+export default App;
 
-export default connect(
-  mapStateToProps,
-  {addPost, fetchData}
-)(App);
+
